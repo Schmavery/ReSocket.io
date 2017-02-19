@@ -13,7 +13,8 @@
 module Path = {
   type pathT;
   external path : pathT = "" [@@bs.module];
-  external join : pathT => Js.undefined string => array string => string = "join" [@@bs.send] [@@bs.splice];
+  external join : pathT => Js.undefined string => array string => string =
+    "join" [@@bs.send] [@@bs.splice];
 };
 
 module Express = {

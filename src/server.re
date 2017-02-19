@@ -22,21 +22,23 @@ module Server (M: M_t) => {
    * any number of them.
    */
   type createOptionsT;
-  external makeOptions : pingTimeout::int? =>
-                         pingInterval::int? =>
-                         maxHttpBufferSize::int? =>
-                         transports::list string? =>
-                         allowUpgrades::bool? =>
-                         perMessageDeflate::int? =>
-                         httpCompression::int? =>
-                         cookie::string? =>
-                         cookiePath::string? =>
-                         wsEngine::string? =>
-                         unit =>
-                         createOptionsT = "" [@@bs.obj];
+  external makeOptions :
+    pingTimeout::int? =>
+    pingInterval::int? =>
+    maxHttpBufferSize::int? =>
+    transports::list string? =>
+    allowUpgrades::Js.boolean? =>
+    perMessageDeflate::int? =>
+    httpCompression::int? =>
+    cookie::string? =>
+    cookiePath::string? =>
+    wsEngine::string? =>
+    unit =>
+    createOptionsT =
+    "" [@@bs.obj];
   let create (options: createOptionsT) => _unsafeCreate options;
   external createWithPort : int => createOptionsT => serverT = "socket.io" [@@bs.module];
-  external serveClient : serverT => bool => serverT = "serveClient" [@@bs.send];
+  external serveClient : serverT => Js.boolean => serverT = "serveClient" [@@bs.send];
   external path : serverT => string => serverT = "path" [@@bs.send];
   /* This kind of function is annoying because it relies on the type of another module which you might not
    * care about (here https://github.com/socketio/socket.io-adapter), and which is defined by someone else.
@@ -58,7 +60,8 @@ module Server (M: M_t) => {
   type kind2 _ =
     | Http :kind2 'a
     | Port :kind2 int;
-  external attach : serverT => (kind2 'a) [@bs.ignore] => 'a => createOptionsT => serverT = "attach" [@@bs.send];
+  external attach : serverT => (kind2 'a) [@bs.ignore] => 'a => createOptionsT => serverT =
+    "attach" [@@bs.send];
 
   /**
    * This is used because variants (in Bucklescript) are not naturally serializable.
@@ -114,7 +117,7 @@ module Server (M: M_t) => {
    */
   module Socket = {
     /* Here 'a means that you can send anything you want, and it'll depend on Bucklescript */
-    external _on : socketT => string => ('a => unit [@bs]) => unit = "on" [@@bs.send];
+    external _on : socketT => string => ('a => unit) => unit = "on" [@@bs.send];
     let on_not_ready_yet socket func =>
       List.iter (fun t => _on socket (M.stringify t) (func t)) M.all;
     let on socket t func => {
@@ -143,12 +146,12 @@ module Server (M: M_t) => {
     let broadcast socket str data =>
       _unsafeEmit BroadcastKind (_unsafeBroadcast socket) (M.stringify str) data;
     external id : socketT => string = "id" [@@bs.get];
-    external join : socketT => string => ('a => unit [@bs]) => socketT = "join" [@@bs.send];
-    external leave : socketT => string => ('a => unit [@bs]) => socketT = "leave" [@@bs.send];
+    external join : socketT => string => ('a => unit) => socketT = "join" [@@bs.send];
+    external leave : socketT => string => ('a => unit) => socketT = "leave" [@@bs.send];
     external selectRoom : socketT => string => socketT = "to" [@@bs.send];
-    external compress : socketT => bool => socketT = "compress" [@@bs.send];
-    external disconnect : socketT => bool => socketT = "disconnect" [@@bs.send];
+    external compress : socketT => Js.boolean => socketT = "compress" [@@bs.send];
+    external disconnect : socketT => Js.boolean => socketT = "disconnect" [@@bs.send];
   };
-  external _unsafeOnConnect : serverT => string => (socketT => unit [@bs]) => unit = "on" [@@bs.send];
+  external _unsafeOnConnect : serverT => string => (socketT => unit) => unit = "on" [@@bs.send];
   let onConnect io cb => _unsafeOnConnect io "connection" cb;
 };

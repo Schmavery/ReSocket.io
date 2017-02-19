@@ -4,13 +4,14 @@
   "description": "socket.io in Reason",
   "scripts": {
     "test": "echo 'No tests yet.  All good :D",
+    "start": "node _build/server/src/exampleserver.js",
     "editor": "esy $EDITOR ."
   },
   "esy": {
     "build": [
-      "rebel"
-    ],
-    "buildsInSource": true
+      "rebel",
+      "webpack $cur__target_dir/client/src/exampleclient.js $cur__target_dir/client/src/app.js"
+    ]
   },
   "dependencies": {
     "socket.io": "^1.4.8",
