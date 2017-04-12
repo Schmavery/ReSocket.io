@@ -42,3 +42,14 @@ FLG -ppx /Users/benjamin/Desktop/resocket.io/node_modules/bs-platform/bin/bsppx.
 
 # User Custom config here
 
+
+####{BSB GENERATED: NO EDIT
+FLG -ppx /Users/schmave/Documents/git/ReSocket.io/node_modules/bs-platform/bin/bsppx.exe
+S /Users/schmave/Documents/git/ReSocket.io/node_modules/bs-platform/lib/ocaml
+B /Users/schmave/Documents/git/ReSocket.io/node_modules/bs-platform/lib/ocaml
+FLG -nostdlib -no-alias-deps -color always -w -40+6+7+27+32..39+44+45
+S /Users/schmave/Documents/git/ReSocket.io/node_modules/reason-js/lib/ocaml
+B /Users/schmave/Documents/git/ReSocket.io/node_modules/reason-js/lib/ocaml
+S src
+B lib/bs/src
+####BSB GENERATED: NO EDIT}
