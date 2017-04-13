@@ -3,7 +3,7 @@ module Path = {
   type pathT;
   /* external path : pathT = "" [@@bs.module]; */
   /* external join : pathT => option string => array string => string = "join" [@@bs.send] [@@bs.splice]; */
-  external join : string => array string => string = "" [@@bs.module "path"] [@@bs.splice];
+  external join : array string => string = "" [@@bs.module "path"] [@@bs.splice];
 };
 
 module Express = {
@@ -27,19 +27,9 @@ let app = Express.express ();
 
 let http = Http.create app;
 
-/* I did this instead of
- *
- *   external __dirname : string = "" [@@bs.val];
- *
- * because the latter will give a merlin error. It doesn't seem to be valid in ocaml to bind to just
- * values instead of functions.
- */
-let __dirname: string = switch ([%bs.node __dirname]){
-  | None => failwith "Could not find __dirname"
-  | Some e => e
-};
+external __dirname : string = "" [@@bs.val];
 
-Express.use app (Express.static (Path.join __dirname [|"..", "..", ".."|]));
+Express.use app (Express.static (Path.join [|__dirname, "..", "..", ".."|]));
 
 Express.get app "/" (fun _ res => Express.sendFile res "index.html" {"root": __dirname});
 
