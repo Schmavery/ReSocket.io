@@ -1,8 +1,6 @@
 /* Created a bunch of modules to keep things clean. This is just for demo purposes. */
 module Path = {
   type pathT;
-  /* external path : pathT = "" [@@bs.module]; */
-  /* external join : pathT => option string => array string => string = "join" [@@bs.send] [@@bs.splice]; */
   external join : array string => string = "" [@@bs.module "path"] [@@bs.splice];
 };
 
