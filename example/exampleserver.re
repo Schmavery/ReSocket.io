@@ -1,19 +1,9 @@
-/*
- * vim: set ft=rust:
- * vim: set ft=reason:
- */
-/* I did this instead of
- *
- *   external __dirname : string = "" [@@bs.val];
- *
- * because the latter will give a merlin error. It doesn't seem to be valid in ocaml to bind to just
- * values instead of functions.
- */
 /* Created a bunch of modules to keep things clean. This is just for demo purposes. */
 module Path = {
   type pathT;
-  external path : pathT = "" [@@bs.module];
-  external join : pathT => Js.undefined string => array string => string = "join" [@@bs.send] [@@bs.splice];
+  /* external path : pathT = "" [@@bs.module]; */
+  /* external join : pathT => option string => array string => string = "join" [@@bs.send] [@@bs.splice]; */
+  external join : string => array string => string = "" [@@bs.module "path"] [@@bs.splice];
 };
 
 module Express = {
@@ -37,11 +27,21 @@ let app = Express.express ();
 
 let http = Http.create app;
 
-let __dirname: Js.undefined string = [%bs.node __dirname];
+/* I did this instead of
+ *
+ *   external __dirname : string = "" [@@bs.val];
+ *
+ * because the latter will give a merlin error. It doesn't seem to be valid in ocaml to bind to just
+ * values instead of functions.
+ */
+let __dirname: string = switch ([%bs.node __dirname]){
+  | None => failwith "Could not find __dirname"
+  | Some e => e
+};
 
-Express.use app (Express.static (Path.join Path.path __dirname [|"..", "..", ".."|]));
+Express.use app (Express.static (Path.join __dirname [|"..", "..", ".."|]));
 
-Express.get app "/" (fun req res => Express.sendFile res "index.html" {"root": __dirname});
+Express.get app "/" (fun _ res => Express.sendFile res "index.html" {"root": __dirname});
 
 module InnerServer = Server.Server Examplecommon;
 

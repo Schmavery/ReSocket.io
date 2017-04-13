@@ -2,7 +2,7 @@
   "name": "ReSocketIO",
   "sources": [
     { "dir": "src" },
-//    { "dir": "example", "type": "dev" }
+    { "dir": "example", "type": "dev" }
   ],
   "bs-dependencies": ["reason-js"]
 }
